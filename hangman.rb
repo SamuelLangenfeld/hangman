@@ -46,6 +46,8 @@ class Game
 
 	end
 
+	private
+
 	def verify_guess
 		puts "Enter one letter from the English alphabet or enter 'save' to save your game"
 		guess=gets.chomp.downcase
@@ -82,6 +84,63 @@ class Game
 	end
 
 
+
+
+
+	def display_game_state
+
+		wrong_string=@incorrect_guesses.join(", ")
+		puts "Wrong guesses: #{wrong_string}"
+
+		partial_secret_word=@display_array.join		
+		puts "Secret word: #{partial_secret_word}"
+
+	end
+
+
+
+	def win?
+		if @incorrect_guesses.size>5
+			return false
+		else
+			return true
+		end
+	end
+
+
+
+
+	def save_game
+		puts "Enter a name for your game"
+		
+		game_name=Game.get_save_name
+		while File.exists? game_name do
+			puts "That is already the name of a saved game. Enter a new name for this game."
+			game_name=get_save_name
+		end
+		f = File.new game_name, 'w'
+		f.puts("#{@secret_word}")
+		incorrect_guesses=@incorrect_guesses.join
+		f.puts("#{incorrect_guesses}")
+		correct_guesses=@correct_guesses.join
+		f.puts("#{correct_guesses}")
+		f.close
+
+	end
+
+	public
+
+	def self.get_save_name
+		game_name=gets.chomp.downcase
+		while (game_name>='{' || game_name<'a') do
+			puts "Enter a name only using English letters"
+			game_name=gets.chomp.downcase
+		end
+		game_name+='.txt'
+		game_name= "saved_games/"+game_name
+		return game_name
+	end
+
 	def try
 		guess=verify_guess
 
@@ -108,17 +167,6 @@ class Game
 		
 	end
 
-
-	def display_game_state
-
-		wrong_string=@incorrect_guesses.join(", ")
-		puts "Wrong guesses: #{wrong_string}"
-
-		partial_secret_word=@display_array.join		
-		puts "Secret word: #{partial_secret_word}"
-
-	end
-
 	def is_over?
 		if @incorrect_guesses.size>5
 			return true
@@ -138,14 +186,6 @@ class Game
 		end
 	end
 
-	def win?
-		if @incorrect_guesses.size>5
-			return false
-		else
-			return true
-		end
-	end
-
 	def end_game_output
 		
 		if win?
@@ -154,36 +194,6 @@ class Game
 			puts "You lose"
 			puts "The secret word was #{@secret_word}"
 		end
-	end
-
-
-	def save_game
-		puts "Enter a name for your game"
-		
-		game_name=Game.get_save_name
-		while File.exists? game_name do
-			puts "That is already the name of a saved game. Enter a new name for this game."
-			game_name=get_save_name
-		end
-		f = File.new game_name, 'w'
-		f.puts("#{@secret_word}")
-		incorrect_guesses=@incorrect_guesses.join
-		f.puts("#{incorrect_guesses}")
-		correct_guesses=@correct_guesses.join
-		f.puts("#{correct_guesses}")
-		f.close
-
-	end
-
-	def self.get_save_name
-		game_name=gets.chomp.downcase
-		while (game_name>='{' || game_name<'a') do
-			puts "Enter a name only using English letters"
-			game_name=gets.chomp.downcase
-		end
-		game_name+='.txt'
-		game_name= "saved_games/"+game_name
-		return game_name
 	end
 
 
